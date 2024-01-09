@@ -1,3 +1,3 @@
-class Agent
-
-endclass
+class Agent extends  /* base class*/;
+	
+endclass : Agent
