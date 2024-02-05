@@ -11,24 +11,22 @@
 `include "wrapper_if.svh"
 
 
-module RTL_MEM_Wrapper ( wrapper_if _if);
+module RTL_MEM_Wrapper (wrapper_if _if);
 	wire MISO;
-	logic RX_UART;
 	wire MOSI;
 	wire SCLK;
 	wire SCS;
-	wire TX_UART;
-
+	
 	topcore_tecriscv uut(
 	.clk(_if.clk),
 	.reset(_if.reset),
 	.MISO(MISO),
-	.RX_UART(RX_UART),
+	.RX_UART(_if.RX_UART),
 	.maip(_if.maip),
 	.MOSI(MOSI),
 	.SCLK(SCLK),
 	.SCS(SCS),
-	.TX_UART(TX_UART),
+	.TX_UART(_if.TX_UART),
 	.full_range_level_shifter(_if.full_range_level_shifter),
 	.IS_Val(_if.IS_Val),
 	.IS_Config(_if.IS_Config),

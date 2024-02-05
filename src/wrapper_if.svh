@@ -18,5 +18,7 @@ interface wrapper_if;
 	logic [7:0] Reg_GPIO_en;
 	logic [7:0] Reg_GPIO_int;
 	logic [7:0] Reg_GPIO_out;
+	logic TX_UART;
+	logic RX_UART;
 	
 endinterface : wrapper_if
