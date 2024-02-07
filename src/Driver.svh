@@ -5,12 +5,13 @@
 //	Programador: Javier Espinoza Rivera	//
 // 	Supervisor: Roberto Molina 			//
 //////////////////////////////////////////
-`include "wrapper_if.svh"
 
-class Driver extends uvm_driver #(drv_item); 	
+class Driver extends uvm_driver #(drv_item);
+	//import uvm_pkg::*; 	
 	`uvm_component_utils(Driver);
 	virtual wrapper_if v_if;
-
+	int start_delay = 0;
+   	int sim_time_execution = 0;
 
 	function new(string name = "Driver",uvm_component parent = null);
     	super.new(name,parent);
@@ -24,19 +25,30 @@ class Driver extends uvm_driver #(drv_item);
   	endfunction
 
 
-   	task run_phase(uvm_phase phase);
-   		phase.raise_objection(this);
-   		if_known_initial_state();
-   		int start_delay = 0;
-   		drv_item drv_item_i;
-   		this.v_if.reset = 1'b1;
-   		seq_item_port.get_next_item(drv_item_i);
-   		if(drv_item_i.start == 1) begin
-   			apply_reset(drv_item_i);
+   	virtual task run_phase(uvm_phase phase);
+   		super.run_phase(phase);
+   		//phase.raise_objection(this);
+   		forever begin
+   			drv_item drv_item_i;
+	   		if_known_initial_state();
+	   		
+	   		
+	   		this.v_if.reset = 1'b1;
+	   		seq_item_port.get_next_item(drv_item_i);
+	   		if(drv_item_i.start == 1) begin
+	   			apply_reset(drv_item_i);
+	   		end
+	   		else begin
+	   			`uvm_warning("DRV",$sformatf("Se recibe Item sin reiniciar %0d", $time(),UVM_LOW))
+	   		end
+	   		while (sim_time_execution < drv_item_i.sim_time) begin
+	   			sim_time_execution++;
+	   			#1;
+	   		end
+	   		seq_item_port.item_done();
    		end
-   		else begin
-   			`uvm_warning("MON",$sformatf("Se recibe Item sin reiniciar %0d", $time(),UVM_LOW)
-   		end
+   		
+   		//phase.drop_objection(this);
 	endtask : run_phase
 
 	task apply_reset(drv_item_i);
@@ -44,7 +56,7 @@ class Driver extends uvm_driver #(drv_item);
 	   		start_delay++;
 	   		#1;
    		end
-   		`uvm_warning("MON",$sformatf("Simulation Delay Finished at %0d", $time(),UVM_LOW)
+   		`uvm_warning("MON",$sformatf("Simulation Delay Finished at %0d", $time(),UVM_LOW))
    		this.v_if.reset = 1'b0;
 	endtask : apply_reset
 
@@ -62,4 +74,4 @@ class Driver extends uvm_driver #(drv_item);
 		this.v_if.RX_UART = 1;
 	endtask : if_known_initial_state
 
-endclass : Driver
+endclass

@@ -24,4 +24,4 @@ class drv_item extends uvm_sequence_item;
         return $sformatf("Delay=%0d, SimulationTime=%0d", delay, sim_time);
     endfunction
 
-endclass : drv_item
+endclass 
