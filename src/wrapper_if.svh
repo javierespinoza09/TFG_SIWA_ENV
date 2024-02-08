@@ -6,8 +6,7 @@
 // 	Supervisor: Roberto Molina 			//
 //////////////////////////////////////////
 
-interface wrapper_if;
-	logic clk;
+interface wrapper_if(input clk);
 	logic reset;
 	logic  [7:0] gpio;
 	logic [7:0] full_range_level_shifter;

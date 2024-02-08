@@ -8,7 +8,7 @@
 
 `include "../../Verificacion_RISCV_TEC/TEC_RISCV/TOP/topcore_tecriscv.sv"
 `include "../../Verificacion_RISCV_TEC/test_env/core_spi_uart/IS25WP032D.v"
-`include "wrapper_if.svh"
+
 
 
 module RTL_MEM_Wrapper (wrapper_if _if);
