@@ -12,6 +12,7 @@ class Driver extends uvm_driver #(drv_item);
 	virtual wrapper_if v_if;
 	int start_delay = 0;
    	int sim_time_execution = 0;
+   	bit dropped;
 
 	function new(string name = "Driver",uvm_component parent = null);
     	super.new(name,parent);
@@ -27,16 +28,24 @@ class Driver extends uvm_driver #(drv_item);
 
    	virtual task run_phase(uvm_phase phase);
    		super.run_phase(phase);
-   		//phase.raise_objection(this);
+   		phase.raise_objection(this);
+   		if_known_initial_state();
+   		this.v_if.reset = 1'b1;
    		forever begin
+
+   			
+
    			drv_item drv_item_i;
-	   		if_known_initial_state();
-	   		
-	   		
-	   		this.v_if.reset = 1'b1;
+	   		sim_time_execution = 0;
 	   		seq_item_port.get_next_item(drv_item_i);
+	   		if(drv_item_i.stop==1) begin 
+	   			`uvm_info("DRV",$sformatf("Se recibe Item para Detener %0d", $time()),UVM_LOW)
+	   			phase.drop_objection(this);
+	   		end
+	   		
 	   		if(drv_item_i.start == 1) begin
 	   			apply_reset(drv_item_i.delay);
+	   			`uvm_info("DRV",$sformatf("Se recibe Item para reiniciar %0d", $time()),UVM_LOW)
 	   		end
 	   		else begin
 	   			`uvm_warning("DRV",$sformatf("Se recibe Item sin reiniciar %0d", $time(),UVM_LOW))
@@ -46,13 +55,16 @@ class Driver extends uvm_driver #(drv_item);
 	   			#1;
 	   		end
 	   		seq_item_port.item_done();
+	   		
    		end
    		
-   		//phase.drop_objection(this);
+   		//
 	endtask : run_phase
 
 	task apply_reset(int delay);
+		int start_delay = 0;
 		while (start_delay < delay) begin
+			this.v_if.reset = 1'b1;
 	   		start_delay+= 1;
 	   		#1;
    		end

@@ -24,11 +24,14 @@ class test_base extends uvm_test;
 
 
     virtual task run_phase(uvm_phase phase);
-    	phase.raise_objection(this);
+    	//phase.raise_objection(this);
             sequence_inst.start(env_inst.agent_inst.sequencer_inst);
-      	 #10000000
-        phase.drop_objection(this);
+        //phase.drop_objection(this);
     endtask
 
+    virtual function void extract_phase(uvm_phase phase);
+    	`uvm_warning("TB",$sformatf("Simulation Delay Finished at %0d", $time(),UVM_LOW))
+    	$finish;
+    endfunction : extract_phase
 
 endclass : test_base

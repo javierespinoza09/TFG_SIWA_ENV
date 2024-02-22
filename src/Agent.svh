@@ -23,6 +23,13 @@ class Agent extends  uvm_agent;
     	driver_inst.seq_item_port.connect(sequencer_inst.seq_item_export);
 	endfunction
 
+	virtual task run_phase(uvm_phase phase);
+   		super.run_phase(phase);
+   		
+
+   	endtask : run_phase
+	
+
 
 
 endclass // Agent

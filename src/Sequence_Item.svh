@@ -11,6 +11,7 @@ class drv_item extends uvm_sequence_item;
 	int delay;
 	int sim_time;
 	bit start;
+	bit stop;
 
 	function new(string name = "drv_item");
 		super.new(name);
