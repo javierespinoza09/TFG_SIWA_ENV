@@ -27,7 +27,7 @@ class gen_sequence_item extends uvm_sequence #(drv_item);
             else begin
                 drv_item drv_item_i = drv_item::type_id::create("drv_item_i");
                 start_item(drv_item_i);
-                drv_item_i.delay = 10000;
+                drv_item_i.delay = 100000;
                 drv_item_i.sim_time = 400000;
                 drv_item_i.start = 1;
                 drv_item_i.stop = 0;
