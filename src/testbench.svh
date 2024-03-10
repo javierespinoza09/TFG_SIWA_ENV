@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 
@@ -5,6 +6,8 @@ import uvm_pkg::*;
 `include "RTL_MEM_Wrapper.svh"
 `include "Sequence_Item.svh"
 `include "Driver.svh"
+`include "Monitor.svh"
+`include "Scoreboard.svh"
 `include "Sequence.svh"
 `include "Agent.svh"
 `include "Enviroment.svh"

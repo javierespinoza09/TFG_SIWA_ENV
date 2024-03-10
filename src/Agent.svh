@@ -5,9 +5,8 @@ class Agent extends  uvm_agent;
 	string name = "Agent";
 
 	Driver driver_inst;
+	Monitor monitor_inst;
 	uvm_sequencer #(drv_item) sequencer_inst;
-
-
 
 	function new(string name, uvm_component parent = null);
 	    super.new(name,parent);
@@ -15,6 +14,7 @@ class Agent extends  uvm_agent;
 
 	function void build_phase(uvm_phase phase);
   		driver_inst = Driver ::type_id::create($sformatf("driver_inst"),this);
+  		monitor_inst = Monitor::type_id::create($sformatf("monitor_inst"),this);
   		sequencer_inst = uvm_sequencer #(drv_item)::type_id::create($sformatf("sequencer_inst"), this);
     endfunction
 
