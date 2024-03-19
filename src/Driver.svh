@@ -39,16 +39,16 @@ class Driver extends uvm_driver #(drv_item);
 	   		sim_time_execution = 0;
 	   		seq_item_port.get_next_item(drv_item_i);
 	   		if(drv_item_i.stop==1) begin 
-	   			`uvm_info("DRV",$sformatf("Se recibe Item para Detener %0d", $time()),UVM_LOW)
+	   			`uvm_info("DRV",$sformatf("Se recibe Item para Detener %0d", $time()),UVM_MEDIUM)
 	   			phase.drop_objection(this);
 	   		end
 	   		
 	   		if(drv_item_i.start == 1) begin
 	   			apply_reset(drv_item_i.delay);
-	   			`uvm_info("DRV",$sformatf("Se recibe Item para reiniciar %0d", $time()),UVM_LOW)
+	   			`uvm_info("DRV",$sformatf("Se recibe Item para reiniciar %0d", $time()),UVM_MEDIUM)
 	   		end
 	   		else begin
-	   			`uvm_warning("DRV",$sformatf("Se recibe Item sin reiniciar %0d", $time(),UVM_LOW))
+	   			`uvm_warning("DRV",$sformatf("Se recibe Item sin reiniciar %0d", $time()))
 	   		end
 	   		while (sim_time_execution < drv_item_i.sim_time) begin
 	   			sim_time_execution++;
@@ -68,7 +68,7 @@ class Driver extends uvm_driver #(drv_item);
 	   		start_delay+= 1;
 	   		#1;
    		end
-   		`uvm_warning("MON",$sformatf("Simulation Delay Finished at %0d", $time(),UVM_LOW))
+   		`uvm_info("DRV",$sformatf("Simulation Delay Finisheed at %0d", $time()),UVM_HIGH)
    		this.v_if.reset = 1'b0;
 	endtask : apply_reset
 
