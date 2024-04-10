@@ -17,6 +17,7 @@ class Enviroment extends uvm_env;
         super.build_phase(phase);
         agent_inst = Agent::type_id::create("agent_inst",this);
         scoreboard_inst = Scoreboard::type_id::create("scoreboard_inst",this);
+        scoreboard_inst.set_report_verbosity_level(UVM_MEDIUM);
     endfunction
 
     virtual function void connect_phase(uvm_phase phase);
