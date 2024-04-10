@@ -14,6 +14,13 @@ class Scoreboard extends uvm_scoreboard;
 	endfunction : build_phase
 
 	virtual function write(mon_sb mon_sb_i);
-		`uvm_info("SB", $sformatf("Analisys Port Activity : RST=%0d",mon_sb_i.reset),UVM_LOW)
+		if(mon_sb_i.reset == 1)  `uvm_info("SB", $sformatf("Analisys Port Activity : RST=%0d",mon_sb_i.reset),UVM_LOW)
+		else begin
+			`uvm_info("SB", $sformatf("Analisys Port Activity : Fetch3"),UVM_HIGH)
+			for(int i = 0; i < 31; i++) begin
+				`uvm_info("SB",$sformatf("%0d General [%0d] RAL = %h",
+							$time,i,mon_sb_i.reg_values[i]),UVM_HIGH)
+			end
+		end
 	endfunction : write
 endclass : Scoreboard

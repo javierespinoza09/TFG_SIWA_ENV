@@ -2,6 +2,8 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 `include "Reg_CSR.svh"
+
+`include "Reg_General.svh"
 `include "wrapper_if.svh"
 `include "RTL_MEM_Wrapper.svh"
 `include "Sequence_Item.svh"
@@ -25,13 +27,19 @@ module tb_top;
   wrapper_if dut_if(clk_tb);
   RTL_MEM_Wrapper dut_wr (._if (dut_if));
   csr_reg_block ral_csr;
-  
+  reg_file_block ral_general;
+
 
   initial begin
     uvm_config_db#(virtual wrapper_if)::set(null, "*","v_if", dut_if);
     ral_csr = new();
     ral_csr.build();
     uvm_config_db#(csr_reg_block)::set(null, "*","ral_csr", ral_csr);
+    ral_general = new();
+    ral_general.build();
+    uvm_config_db#(reg_file_block)::set(null, "*","ral_general", ral_general);
+
+
 
     run_test("test_base");
   end
