@@ -27,6 +27,7 @@ class Monitor extends uvm_monitor;
   
   `uvm_component_utils(Monitor); // Declaracion en la fabrica
   
+
   uvm_analysis_port #(mon_sb) mon_analysis_port;    // Declaracion de puerto de analisis
                                                     // Metodo de comunicar al Scoreboard
   virtual wrapper_if v_if;
@@ -35,6 +36,7 @@ class Monitor extends uvm_monitor;
   uvm_status_e  status;
   bit [7:0] fsm_ctrl_status;  // Destino del cur_state backdoor mirror
   bit [32]reg_values[31];     // Arreglo de destino Regsitros Generales
+
   
   ////////////////  RAL Instances  /////////////////
   csr_reg_block ral_csr;  
@@ -53,6 +55,7 @@ class Monitor extends uvm_monitor;
     if(!uvm_config_db#(virtual wrapper_if)::get(this,"","v_if",v_if))begin
       `uvm_fatal("MON","uvm_config_db::get failed wrapper_if")
     end
+
     // get RAL modulo CSR backdoor
     if(!uvm_config_db#(csr_reg_block)::get(null, "","ral_csr", ral_csr))begin
       `uvm_fatal("MON","uvm_config_db::get failed ral_csr")
@@ -69,22 +72,26 @@ class Monitor extends uvm_monitor;
       this.reg_values[r] = 0;
       `uvm_info("MON", $sformatf("REG %h", this.reg_values [r]), UVM_DEBUG)
     end   
+
   endfunction
   
   task run_phase(uvm_phase phase);
     super.run_phase(phase);
+
     fork
       RST_check();
       Backdoor_access();
       //concurrent_task_1...
       //concurrent_task_2...
     join
+
   endtask
 
 
   virtual task RST_check(); // Revision concurrente de senal de RESET
     int rst_high;           // Bandera de RESET HIGH
     forever begin
+
       @(posedge v_if.clk);  // Esperar el flanco positivo de CLK
         if (v_if.reset==1 && rst_high == 0) begin   // En caso de RESET y !rst_high
             mon_sb mon_sb = new;                    // Creacion de un mensaje
@@ -94,12 +101,12 @@ class Monitor extends uvm_monitor;
             `uvm_info("MON", $sformatf("t=%0t reset=%0b",               // INFO:UVM_MEDIUM
                       mon_sb.event_time, mon_sb.reset), UVM_HIGH)     // Datos del paquete
             mon_analysis_port.write (mon_sb);       // Escritura del mensaje en el AP
-
         end
         if(v_if.reset==0) rst_high = 0;     // Bajar bandera en !RESET
 
     end
   endtask : RST_check
+
 
 
   //////////////////// BACKDOOR ACCESS TASK /////////////////////
@@ -127,6 +134,7 @@ class Monitor extends uvm_monitor;
       mon_analysis_port.write (mon_sb);  // Escritura del mensaje en el AP
       end
       
+
     end
   endtask : Backdoor_access
     

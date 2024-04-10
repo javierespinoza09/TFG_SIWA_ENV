@@ -34,6 +34,7 @@ class Driver extends uvm_driver #(drv_item); // Driver dedicado a recibir drv_it
    		forever begin
    			drv_item drv_item_i;		// Instancia de "drv_item"
 	   		sim_time_execution = 0;
+
 	   		seq_item_port.get_next_item(drv_item_i);  	// Espera hasta drv_item disponible
 	   		if(drv_item_i.stop==1) begin 				// Caso de indicacion para detener la simulacion
 	   			`uvm_info("DRV",$sformatf("Se recibe Item para Detener %0d", $time()),UVM_HIGH)
@@ -43,6 +44,7 @@ class Driver extends uvm_driver #(drv_item); // Driver dedicado a recibir drv_it
 	   		if(drv_item_i.start == 1) begin 	// Indicacion de iniciar ejecucion
 	   			`uvm_info("DRV",$sformatf("Se recibe Item para reiniciar %0d", $time()),UVM_HIGH)
 	   			apply_reset(drv_item_i.delay);		// Llamado a tarea de RESET, delay de reset como argumento
+
 	   		end
 	   		else begin
 	   			`uvm_warning("DRV",$sformatf("Se recibe Item sin reiniciar %0d", $time()))
