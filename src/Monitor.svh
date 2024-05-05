@@ -1,19 +1,3 @@
-class mon_sb extends uvm_object; // Clase de datos del monitor al scoreboard
-
-  int reset;                      // Indicador si el caso es de reset
-  int event_time;                 // Valor de tiempo de simulacion donde sucede el evento
-  bit [32]reg_values[31];         // Arreglo de bits para representar los registros generales
-  `uvm_object_utils_begin(mon_sb) // Declaracion en la fabrica
-    `uvm_field_int (reset, UVM_DEFAULT)
-    `uvm_field_int (event_time, UVM_DEFAULT)
-  `uvm_object_utils_end
-
-  ///////////Constructor///////////////
-  function new(string name= "mon_sb");
-      super.new(name);
-    endfunction
-endclass : mon_sb
-
 //////////////////////////////////////////////
 //  UVM Monitor                             //
 //  Monitor, hereda de UVM Monitor          //
@@ -99,7 +83,7 @@ class Monitor extends uvm_monitor;
             mon_sb.reset = 1;                       // Indicador de evento de reset
             mon_sb.event_time = $time();            // Almacenar tiempo del evento
             `uvm_info("MON", $sformatf("t=%0t reset=%0b",               // INFO:UVM_MEDIUM
-                      mon_sb.event_time, mon_sb.reset), UVM_HIGH)     // Datos del paquete
+                      mon_sb.event_time, mon_sb.reset), UVM_DEBUG)     // Datos del paquete
             mon_analysis_port.write (mon_sb);       // Escritura del mensaje en el AP
         end
         if(v_if.reset==0) rst_high = 0;     // Bajar bandera en !RESET
@@ -111,32 +95,47 @@ class Monitor extends uvm_monitor;
 
   //////////////////// BACKDOOR ACCESS TASK /////////////////////
   virtual task Backdoor_access(); // Acceso a registros por medio de Backdoor
-    
+    int same_state = 0;
+    bit [31:0] csr_data;
     forever begin
       @(posedge v_if.clk);
       
       ral_csr.control_sm.peek(status, fsm_ctrl_status); // Acceso a FSM de unidad de control
-      if (fsm_ctrl_status == 8'h05) begin               // Evaluar en "fetch3"
-        mon_sb mon_sb = new;                            
-        mon_sb.reset = 0;                               // Indicador NO RESET EVENT
-        mon_sb.event_time = $time();
-        for(int i = 0; i < 31; i++) begin   // Iterar sobre la cantidad de registros en el banco
-          for (int h = 0; h < 32; h++) begin  // Iterar sobre latches, componentes del registro 
-            automatic int l = h;
-            ////////// Mirror de latches ///////////
-            ral_general.Reg_General_array[i].Latch_General_array[l].peek(status, reg_values [i][l]);
-            ////////// Copia en "reg_values" /////////
+      //if (fsm_ctrl_status == 8'h05) begin               // Evaluar en "fetch3"
+      if (tb_top.dut_wr.uut.TOP.Reg_file.write) begin       // Evaluar en RF's write signal 
+        if(same_state == 0) begin
+          mon_sb mon_sb = new; 
+          same_state = 1;                           
+          mon_sb.reset = 0;
+          mon_sb.event_time = $time();
+          mon_sb.reg_values[0] = tb_top.dut_wr.uut.TOP.pc;
+          `uvm_info("MON",$sformatf("%0d PC RAL = %h",
+                                      $time,mon_sb.reg_values[0]),UVM_HIGH)
+          for(int i = 0; i < 31; i++) begin   // Iterar sobre la cantidad de registros en el banco
+            for (int h = 0; h < 32; h++) begin  // Iterar sobre latches, componentes del registro 
+              automatic int l = h;
+              ////////// Mirror de latches ///////////
+              ral_general.Reg_General_array[i].Latch_General_array[l].peek(status, reg_values [i][31-l]); // i = 0 => PC 
+              ////////// Copia en "reg_values" /////////
+            end
+            mon_sb.reg_values[i+1] = reg_values [i];  // Escribir enformacion en paquete
+            `uvm_info("MON",$sformatf("%0d General [%0d] RAL = %h",
+                                      $time,i,reg_values[i]),UVM_DEBUG)  // INFO: Contenido de los registros caragdo en paquete al Sb
           end
-          mon_sb.reg_values[i] = reg_values [i];  // Escribir enformacion en paquete
-          `uvm_info("MON",$sformatf("%0d General [%0d] RAL = %h",$time,i,reg_values[i]),UVM_HIGH)
-          // INFO: Contenido de los registros caragdo en paquete al Sb
-        end
-      mon_analysis_port.write (mon_sb);  // Escritura del mensaje en el AP
+          ral_csr.csr_reg_backdoor(ral_csr.ral_interrupt1_i, csr_data);
+          mon_sb.interrupt1 = csr_data;
+          ral_csr.csr_reg_backdoor(ral_csr.ral_interrupt2_i, csr_data);
+          ral_csr.csr_reg_backdoor(ral_csr.gpio_i, csr_data);
+          ral_csr.csr_reg_backdoor(ral_csr.timer_valor_i, csr_data);
+          `uvm_info(get_full_name(),$sformatf("%0d TIMER RAL = %h",
+                                      $time,csr_data),UVM_MEDIUM)
+          
+          mon_analysis_port.write (mon_sb);  // Escritura del mensaje en el AP
+        end  
       end
-      
-
+      else same_state = 0;
     end
   endtask : Backdoor_access
-    
+  
 endclass : Monitor
 

@@ -11,8 +11,13 @@ class gen_sequence_item extends uvm_sequence #(drv_item);
     endfunction : build_phase
 
     virtual task body();
-        for (int i = 0; i <= 2 ; i++) begin  
-            if (i == 2) begin 
+        uvm_component test;
+        string testname;
+        test = uvm_root::get().find("uvm_test_top");   
+        testname = test.get_type_name();
+        $display("TEST NAME: %s",testname);
+        for (int i = 0; i <= 1 ; i++) begin  
+            if (i == 1) begin 
                 drv_item drv_item_i = drv_item::type_id::create("drv_item_i");
                 start_item(drv_item_i);
                 drv_item_i.delay = 0;
@@ -28,7 +33,7 @@ class gen_sequence_item extends uvm_sequence #(drv_item);
                 drv_item drv_item_i = drv_item::type_id::create("drv_item_i");
                 start_item(drv_item_i);
                 drv_item_i.delay = 500000;
-                drv_item_i.sim_time = 400000;
+                drv_item_i.sim_time = 300000;
                 drv_item_i.start = 1;
                 drv_item_i.stop = 0;
                 `uvm_info("SEQ",$sformatf("New item %0s", drv_item_i.item_str_content()),UVM_LOW)

@@ -2,7 +2,7 @@
 
 class Enviroment extends uvm_env;
 	`uvm_component_utils(Enviroment);
-  
+   
   	Agent agent_inst;
     Scoreboard scoreboard_inst;
   	gen_sequence_item sequence_inst;

@@ -6,6 +6,7 @@ class test_base extends uvm_test;
         super.new(name, parent);
     endfunction
 
+    
     Enviroment env_inst;
     gen_sequence_item sequence_inst;
     virtual wrapper_if v_if;
@@ -25,8 +26,10 @@ class test_base extends uvm_test;
       		`uvm_fatal("TB","uvm_config_db::get failed ral_csr")
     	end
     	//vm_config_db#(virtual wrapper_if)::set(this, "env_inst.agent_inst.*", "router_if", v_if);
-
+    	
 	endfunction
+
+
 
 
     virtual task run_phase(uvm_phase phase);
@@ -36,9 +39,9 @@ class test_base extends uvm_test;
         //phase.drop_objection(this);
     endtask
 
-    virtual function void extract_phase(uvm_phase phase);
-    	`uvm_warning("TB",$sformatf("Simulation Delay Finished at %0d", $time(),UVM_LOW))
+    virtual function void final_phase(uvm_phase phase);
+    	`uvm_warning("TB",$sformatf("Simulation Delay Finished at %0d", $time()))
     	$finish;
-    endfunction : extract_phase
+    endfunction : final_phase
 
 endclass : test_base

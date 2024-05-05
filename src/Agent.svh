@@ -17,7 +17,7 @@ class Agent extends  uvm_agent;
   		driver_inst = Driver ::type_id::create($sformatf("driver_inst"),this);
   		driver_inst.set_report_verbosity_level(UVM_LOW);
   		monitor_inst = Monitor::type_id::create($sformatf("monitor_inst"),this);
-  		monitor_inst.set_report_verbosity_level(UVM_LOW);
+  		monitor_inst.set_report_verbosity_level(UVM_MEDIUM);
   		sequencer_inst = uvm_sequencer #(drv_item)::type_id::create($sformatf("sequencer_inst"), this);
     endfunction
 

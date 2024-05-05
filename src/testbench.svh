@@ -1,12 +1,16 @@
 `timescale 1ns/10ps
 `include "uvm_macros.svh"
 import uvm_pkg::*;
+// Predictor Files //
+`include "../support/Reference_Model.sv"
+
+// Enviroment Files //
+`include "Reg_General.svh"
 `include "Reg_CSR.svh"
 
-`include "Reg_General.svh"
 `include "wrapper_if.svh"
 `include "RTL_MEM_Wrapper.svh"
-`include "Sequence_Item.svh"
+`include "Test_Item.svh"
 `include "Driver.svh"
 `include "Monitor.svh"
 `include "Scoreboard.svh"
@@ -14,7 +18,6 @@ import uvm_pkg::*;
 `include "Agent.svh"
 `include "Enviroment.svh"
 `include "test_base.svh"
-
 
 
 module tb_top;
