@@ -18,20 +18,28 @@ class Reg_Control extends  uvm_reg;
 endclass : Reg_Control
 
 class inst_fetch_reg extends uvm_reg;
-	`uvm_object_utils(Reg_Control)
-
+	`uvm_object_utils(inst_fetch_reg)
+	uvm_reg_field status;
+	/*
 	uvm_reg_field opcode;
 	uvm_reg_field rd;
 	uvm_reg_field rs1;
 	uvm_reg_field rs2;
 	uvm_reg_field func3;
 	uvm_reg_field func7;
-
+*/
 	function new (string name = "inst_fetch_reg");
 		super.new(name, 32, UVM_NO_COVERAGE);
 	endfunction
 
 	function void build;
+		status = uvm_reg_field::type_id::create("status");
+		status.configure(.parent(this),.size(32),.lsb_pos(0),
+						.access("RW"),.volatile(0),.reset(1),
+						.has_reset(1),.is_rand(1),
+						.individually_accessible(1));
+
+		/*
 		opcode = uvm_reg_field::type_id::create("opcode");
 		opcode.configure(.parent(this),.size(7),.lsb_pos(0),
 						.access("RW"),.volatile(0),.reset(1),
@@ -54,7 +62,7 @@ class inst_fetch_reg extends uvm_reg;
 						.has_reset(1),.is_rand(1),
 						.individually_accessible(1));
 		rs2 = uvm_reg_field::type_id::create("rs2");
-		rs2.configure(.parent(this),.size(7),.lsb_pos(20),
+		rs2.configure(.parent(this),.size(5),.lsb_pos(20),
 						.access("RW"),.volatile(0),.reset(1),
 						.has_reset(1),.is_rand(1),
 						.individually_accessible(1));
@@ -63,6 +71,14 @@ class inst_fetch_reg extends uvm_reg;
 						.access("RW"),.volatile(0),.reset(1),
 						.has_reset(1),.is_rand(1),
 						.individually_accessible(1));
+
+		add_hdl_path_slice(.name("opcode"), .offset(0), .size(7));
+		add_hdl_path_slice(.name("rd"), .offset(7), .size(5));
+		add_hdl_path_slice(.name("func3"), .offset(12), .size(3));
+		add_hdl_path_slice(.name("rs1"), .offset(15), .size(5));
+		add_hdl_path_slice(.name("rs2"), .offset(20), .size(5));
+		add_hdl_path_slice(.name("func7"), .offset(25), .size(7));
+		*/
 	endfunction : build
 	
 endclass : inst_fetch_reg
@@ -212,15 +228,15 @@ class csr_reg_block extends  uvm_reg_block;  // ****** CSR REG ARRAY *********
 		control_sm = Reg_Control::type_id::create("control_sm");
 		control_sm.configure(this, null, "");
 		control_sm.build();
-		control_sm.add_hdl_path_slice("cur_state",0, control_sm.get_n_bits());
-		add_hdl_path("tb_top.dut_wr.uut.TOP.central_control");
-		lock_model();
+		control_sm.add_hdl_path_slice("central_control.cur_state",0, control_sm.get_n_bits());
+		//add_hdl_path("tb_top.dut_wr.uut.TOP.central_control");
+		//lock_model();
 
-		inst_fetch_reg_i = Reg_Control::type_id::create("control_sm");
+		inst_fetch_reg_i = inst_fetch_reg::type_id::create("inst_fetch_reg_i");
 		inst_fetch_reg_i.configure(this, null, "");
 		inst_fetch_reg_i.build();
-		inst_fetch_reg_i.add_hdl_path_slice("inst_reg",0, inst_fetch_reg_i.get_n_bits());
-		add_hdl_path("tb_top.dut_wr.uut.TOP.Deco");
+		inst_fetch_reg_i.add_hdl_path_slice("Deco.inst_reg",0, inst_fetch_reg_i.get_n_bits());
+		add_hdl_path("tb_top.dut_wr.uut.TOP");
 		lock_model();
 
 		ral_interrupt1_i = ral_interrupt1::type_id::create("ral_interrupt1_i");

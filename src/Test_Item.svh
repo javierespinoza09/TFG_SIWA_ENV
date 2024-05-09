@@ -65,4 +65,4 @@ class inst_fetch_item extends uvm_object;
 	function new(string name = "inst_fetch_item");
 		super.new(name);
 	endfunction
-endclass
+endclass: inst_fetch_item

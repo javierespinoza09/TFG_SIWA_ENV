@@ -29,8 +29,8 @@ class Scoreboard extends uvm_scoreboard;
 		$display("prediction Size = %0d", prediction.size());
 		strQ_to_monsbQ(prediction, csr_predict, mon_sb_Q);
 		//print_hex(mon_sb_Q);
-		$display("Out Q = ",mon_sb_Q.size());
-		$display("Out Q = ",csr_predict.size());
+		//$display("Out Q = ",mon_sb_Q.size());
+		//$display("Out Q = ",csr_predict.size());
 
 		//print_prediction(prediction);
 
