@@ -128,7 +128,7 @@ class Monitor extends uvm_monitor;
           ral_csr.csr_reg_backdoor(ral_csr.gpio_i, csr_data);
           ral_csr.csr_reg_backdoor(ral_csr.timer_valor_i, csr_data);
           `uvm_info(get_full_name(),$sformatf("%0d TIMER RAL = %h",
-                                      $time,csr_data),UVM_MEDIUM)
+                                      $time,csr_data),UVM_DEBUG)
           
           mon_analysis_port.write (mon_sb);  // Escritura del mensaje en el AP
         end  

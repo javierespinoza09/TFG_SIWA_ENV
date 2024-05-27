@@ -55,11 +55,12 @@ class Monitor_cov extends uvm_monitor;
         inst_fetch_item_i.opcode = full_inst [6:0];
         inst_fetch_item_i.func3 = full_inst [14:12];
         inst_fetch_item_i.func7 = full_inst [31:25];
+        inst_fetch_item_i.rd = full_inst [11:7];
 
         //ral_csr.inst_fetch_reg_i.peek(func3, inst_fetch_item_i.func3);
         //ral_csr.inst_fetch_reg_i.peek(func7, inst_fetch_item_i.func7);
         mon_cov_analysis_port.write(inst_fetch_item_i);
-        `uvm_info(get_full_name(),$sformatf("opcode = %b // func3 = %b // FULL = %b",inst_fetch_item_i.opcode, inst_fetch_item_i.func3, full_inst),UVM_LOW)
+        `uvm_info(get_full_name(),$sformatf("opcode = %b // func3 = %b // FULL = %b",inst_fetch_item_i.opcode, inst_fetch_item_i.func3, full_inst),UVM_DEBUG)
       end
     end
   endtask

@@ -67,8 +67,8 @@ class Scoreboard extends uvm_scoreboard;
 		int reg_cont = 0;
 		mon_sb temp_pred;
 		mon_sb temp_read;
-		$fwrite(RF_PASS,"Time,Status,Register File,Expected Value,Mirrored Value\n");
-		$fwrite(RF_MISS,"Time,Status,Register File,Expected Value,Mirrored Value\n");
+		$fwrite(RF_PASS,"Time,Status,Register File,Register,Expected Value,Mirrored Value\n");
+		$fwrite(RF_MISS,"Time,Status,Register File,Register,Expected Value,Mirrored Value\n");
  		while(mon_sb_Q.size() > 0) begin
  			temp_pred = mon_sb_Q.pop_front();
 			temp_read = reg_read_result.pop_front();
@@ -78,7 +78,7 @@ class Scoreboard extends uvm_scoreboard;
 				assert (temp_pred.reg_values[k] == temp_read.reg_values[i]) begin
 					`uvm_info(get_full_name(),$sformatf("%d BIEN %h = %h",reg_cont,temp_pred.reg_values[k],
 														temp_read.reg_values[i]), UVM_HIGH);
-					$fwrite(RF_PASS,$sformatf("%0d,PASS,%0d,%h,%h\n",temp_read.event_time,reg_cont,temp_pred.reg_values[k],
+					$fwrite(RF_PASS,$sformatf("%0d,PASS,%0d,x%0d,%h,%h\n",temp_read.event_time,reg_cont,k,temp_pred.reg_values[k],
 														temp_read.reg_values[i]));
 				end
 
@@ -114,7 +114,7 @@ class Scoreboard extends uvm_scoreboard;
 			else begin
 				if ((csr_count < 13) && (csr_predict.size() > 0)) begin
 					temp_str = csr_predict.pop_front();
-					$display("Out Q = %s",temp_str);
+					//$display("Out Q = %s",temp_str);
 					case (csr_count)
 						mcause1: begin
 							mon_sb.interrupt1 = temp_str.atohex();
