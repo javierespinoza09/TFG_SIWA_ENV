@@ -2,7 +2,7 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 // Predictor Files //
-`include "../support/Reference_Model.sv"
+//`include "/mnt/vol_NFS_rh003/estudiantes/Javier_Espinoza/Verificacion_RISCV_TEC/test_env/core/Reference_Model.sv"
 
 // Enviroment Files //
 `include "Reg_General.svh"
@@ -15,7 +15,7 @@ import uvm_pkg::*;
 `include "Driver.svh"
 `include "Monitor.svh"
 `include "Monitor_cov.svh"
-`include "Scoreboard.svh"
+//`include "Scoreboard.svh"
 `include "Sequence.svh"
 `include "Agent.svh"
 `include "Agent_Cov.svh"

@@ -6,8 +6,8 @@
 // 	Supervisor: Roberto Molina 			//
 //////////////////////////////////////////
 
-`include "../../Verificacion_RISCV_TEC/TEC_RISCV/TOP/topcore_tecriscv.sv"
-`include "../../Verificacion_RISCV_TEC/test_env/core_spi_uart/IS25WP032D.v"
+`include "../../TEC_RISCV/TOP/topcore_tecriscv.sv"
+`include "../../TEC_RISCV/test_topcore/IS25WP032D.v"
 
 
 
