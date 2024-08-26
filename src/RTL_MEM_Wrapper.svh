@@ -7,7 +7,7 @@
 //////////////////////////////////////////
 
 `include "../../TEC_RISCV/TOP/topcore_tecriscv.sv"
-`include "../../TEC_RISCV/test_topcore/IS25WP032D.v"
+`include "../../IS25WP032D.v"
 
 
 
